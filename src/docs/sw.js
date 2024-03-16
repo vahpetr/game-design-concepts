@@ -23,7 +23,7 @@ self.addEventListener("install", function (event) {
         var manifestUrls = manifest.files
           .map(function (file) {
             var path = file.output[map[file.type]]?.relative_path;
-            return path ? `/${path}` : "";
+            return path ? `./${path}` : "";
           })
           .filter((p) => p !== "");
         urlsToCache = urlsToCache.concat(manifestUrls);
