@@ -1,0 +1,57 @@
+/* docfx bugfix */
+@media (min-width: 768px) {
+  .navbar-expand-md .navbar-nav {
+    display: none !important;
+  }
+}
+.speak-btn {
+  opacity: 0.5;
+  position: fixed;
+  bottom: 16px;
+  left: 8px;
+  border: none;
+  border-radius: 50%;
+  background-color: #007bff;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.progress-container {
+  opacity: 0.5;
+  position: fixed;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
+  height: 4px;
+  background-color: #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+.progress-bar {
+  height: 100%;
+  background-color: #4caf50;
+  width: 0%;
+  border-radius: 5px;
+}
+
+footer span {
+  padding-left: 56px;
+}
+
+body > footer,
+body[data-layout="landing"] > footer {
+  height: 70px;
+}
+
+@media (min-width: 768px) {
+  .toc .mb-md-4 {
+    margin-bottom: 1.4rem;
+    padding-left: 48px;
+  }
+}
