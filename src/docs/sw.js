@@ -1,6 +1,7 @@
 var CACHE_NAME = "game-design-concepts-pwa-cache-v1";
 var urlsToCache = [
   "./",
+  "./?source=pwa",
   "./public/main.css",
   "./public/main.js",
   "./public/docfx.min.css",
