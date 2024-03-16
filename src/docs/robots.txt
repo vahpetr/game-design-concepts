@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://vahpetr.github.io/game-design-concepts/sitemap.xml
