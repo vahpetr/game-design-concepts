@@ -3,6 +3,81 @@ export default {
   start: () => {
     const YAID = 96761155;
 
+    function appendMeta() {
+      const meta = [
+        {
+          tag: "link",
+          attrs: {
+            rel: "apple-touch-icon",
+            sizes: "180x180",
+            href: "/apple-touch-icon.png",
+          },
+        },
+        {
+          tag: "link",
+          attrs: {
+            rel: "icon",
+            type: "image/png",
+            sizes: "32x32",
+            href: "/favicon-32x32.png",
+          },
+        },
+        {
+          tag: "link",
+          attrs: {
+            rel: "icon",
+            type: "image/png",
+            sizes: "16x16",
+            href: "/favicon-16x16.png",
+          },
+        },
+        {
+          tag: "link",
+          attrs: { rel: "manifest", href: "/site.webmanifest" },
+        },
+        {
+          tag: "link",
+          attrs: {
+            rel: "mask-icon",
+            href: "/safari-pinned-tab.svg",
+            color: "#22241f",
+          },
+        },
+        {
+          tag: "meta",
+          attrs: {
+            name: "apple-mobile-web-app-title",
+            content: "Game Design Concepts",
+          },
+        },
+        {
+          tag: "meta",
+          attrs: {
+            name: "application-name",
+            content: "Game Design Concepts",
+          },
+        },
+        {
+          tag: "meta",
+          attrs: { name: "msapplication-TileColor", content: "#22241f" },
+        },
+        {
+          tag: "meta",
+          attrs: { name: "theme-color", content: "#ffffff" },
+        },
+      ];
+
+      meta.forEach((p) => {
+        const el = document.createElement(p.tag);
+        Object.keys(p.attrs).forEach((key) => {
+          el.setAttribute(key, p.attrs[key]);
+        });
+        document.head.appendChild(el);
+      });
+    }
+
+    appendMeta();
+
     (function (m, e, t, r, i, k, a) {
       m[i] =
         m[i] ||
@@ -29,6 +104,22 @@ export default {
       trackHash: true,
       webvisor: true,
     });
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("/public/sw.js").then(
+          function (registration) {
+            console.log(
+              "ServiceWorker registration successful with scope: ",
+              registration.scope
+            );
+          },
+          function (err) {
+            console.log("ServiceWorker registration failed: ", err);
+          }
+        );
+      });
+    }
 
     if (!window.speechSynthesis) {
       console.log("SpeechSynthesis is not supported in this browser.");

@@ -1,0 +1,22 @@
+{
+    "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+    "name": "Game Design Concepts",
+    "short_name": "GDConcepts",
+    "description": "This project aims to reflect Ian Schreiber's contributions to game design theory and practice.",
+    "icons": [
+        {
+            "src": "/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#ffffff",
+    "background_color": "#22241f",
+    "start_url": "https://vahpetr.github.io/game-design-concepts/?source=pwa",
+    "display": "standalone"
+}
