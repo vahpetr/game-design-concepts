@@ -10,7 +10,7 @@ export default {
           attrs: {
             rel: "apple-touch-icon",
             sizes: "180x180",
-            href: "/apple-touch-icon.png",
+            href: "./apple-touch-icon.png",
           },
         },
         {
@@ -19,7 +19,7 @@ export default {
             rel: "icon",
             type: "image/png",
             sizes: "32x32",
-            href: "/favicon-32x32.png",
+            href: "./favicon-32x32.png",
           },
         },
         {
@@ -28,18 +28,18 @@ export default {
             rel: "icon",
             type: "image/png",
             sizes: "16x16",
-            href: "/favicon-16x16.png",
+            href: "./favicon-16x16.png",
           },
         },
         {
           tag: "link",
-          attrs: { rel: "manifest", href: "/site.webmanifest" },
+          attrs: { rel: "manifest", href: "./site.webmanifest" },
         },
         {
           tag: "link",
           attrs: {
             rel: "mask-icon",
-            href: "/safari-pinned-tab.svg",
+            href: "./safari-pinned-tab.svg",
             color: "#22241f",
           },
         },
@@ -107,7 +107,7 @@ export default {
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", function () {
-        navigator.serviceWorker.register("/public/sw.js").then(
+        navigator.serviceWorker.register("./sw.js").then(
           function (registration) {
             console.log(
               "ServiceWorker registration successful with scope: ",

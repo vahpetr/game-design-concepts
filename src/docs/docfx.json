@@ -24,7 +24,8 @@
           "favicon.ico",
           "mstile-150x150.png",
           "safari-pinned-tab.svg",
-          "site.webmanifest"
+          "site.webmanifest",
+          "sw.js"
         ]
       }
     ],

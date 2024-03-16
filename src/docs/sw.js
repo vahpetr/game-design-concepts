@@ -1,16 +1,16 @@
 var CACHE_NAME = "game-design-concepts-pwa-cache-v1";
 var urlsToCache = [
-  "/",
-  "/public/main.css",
-  "/public/main.js",
-  "/public/docfx.min.css",
-  "/public/docfx.min.js",
-  "logo.svg",
+  "./",
+  "./public/main.css",
+  "./public/main.js",
+  "./public/docfx.min.css",
+  "./public/docfx.min.js",
+  "./logo.svg",
 ];
 
 self.addEventListener("install", function (event) {
   event.waitUntil(
-    fetch("/manifest.json")
+    fetch("./manifest.json")
       .then(function (response) {
         return response.json();
       })
