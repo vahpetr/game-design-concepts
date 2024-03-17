@@ -46,7 +46,7 @@ self.addEventListener("install", (event) => {
 self.addEventListener("fetch", (event) => {
   console.log("Fetch processing for", event.request.url);
   const url = new URL(event.request.url);
-  const networkFirst = ["/manifest.json"]; // "/api/" for example
+  const networkFirst = ["/manifest.json", "/main.js"]; // "/api/" for example
   if (networkFirst.some((part) => url.pathname.includes(part))) {
     // Network First Strategy
     event.respondWith(
