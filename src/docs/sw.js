@@ -30,18 +30,18 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     prepareFullUrlsToCache().then(async (fullUrlsToCache) => {
       const cache = await caches.open(CACHE_NAME);
-      const cachePromises = fullUrlsToCache.map(async (url) => {
+      for (const url of fullUrlsToCache) {
         try {
-          const promise = await cache.add(url);
+          await cache.add(url);
           console.log(`Install: Caching success: ${url}`);
-          return promise;
         } catch (err) {
           console.warn(`Install: Caching error ${url}: ${err}`);
         }
-      });
-      await Promise.all(cachePromises);
+      }
+
       // Activates the service worker instantly
       self.skipWaiting();
+
       // Sending a successful installation message
       await self.clients
         .matchAll({ includeUncontrolled: true })
@@ -74,9 +74,9 @@ self.addEventListener("fetch", (event) => {
             event.request.url
           );
           const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseClone);
-          });
+          caches
+            .open(CACHE_NAME)
+            .then((cache) => cache.put(event.request, responseClone));
           return response;
         })
         .catch(async () => {
