@@ -25,7 +25,9 @@
           "mstile-150x150.png",
           "safari-pinned-tab.svg",
           "site.webmanifest",
-          "sw.js"
+          "sw.js",
+          "offline.html",
+          "fallback.png"
         ]
       }
     ],

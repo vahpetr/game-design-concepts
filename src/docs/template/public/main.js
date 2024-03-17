@@ -1,8 +1,10 @@
 export default {
   lunrLanguages: ["en", "ru"],
   start: () => {
-    const YAID = 96761155;
-
+    const YMID = 96761155;
+    function reachGoal(goal) {
+      ym && ym(YMID, "reachGoal", goal);
+    }
     function appendMeta() {
       const meta = [
         {
@@ -97,7 +99,7 @@ export default {
         a.parentNode.insertBefore(k, a);
     })(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
 
-    ym(YAID, "init", {
+    ym(YMID, "init", {
       clickmap: true,
       trackLinks: true,
       accurateTrackBounce: true,
@@ -123,6 +125,7 @@ export default {
                 console.warn(
                   "New version of the application is available! Please reload the page."
                 );
+                window.location.reload();
               }
             };
           });
@@ -130,9 +133,14 @@ export default {
         (err) => console.error("ServiceWorker registration failed: ", err)
       );
       navigator.serviceWorker.addEventListener("message", (event) => {
-        if (event.data && event.data.type === "UPDATE_AVAILABLE") {
+        if (!event.data) return;
+
+        if (event.data.type === "UPDATE_AVAILABLE") {
           // TODO add popup
           console.warn("Update available. Reload the page.");
+          window.location.reload();
+        } else if (event.data.type === "SW_INSTALLED") {
+          reachGoal("sw_installed");
         }
       });
       if (navigator.serviceWorker.controller) {
@@ -143,6 +151,11 @@ export default {
           });
       }
     }
+
+    window.addEventListener("appinstalled", (evt) => {
+      console.log("App installed!");
+      reachGoal("app_installed");
+    });
 
     if (!window.speechSynthesis) {
       console.warn("SpeechSynthesis is not supported in this browser.");
@@ -198,7 +211,7 @@ export default {
       }
 
       speakButton.onclick = (ev) => {
-        ym(YAID, "reachGoal", "use_speech_synthesis");
+        reachGoal("use_speech_synthesis");
         if (!speaking) {
           if (sentences.length === 0 || currentSentenceIndex === 0) {
             const articleText =

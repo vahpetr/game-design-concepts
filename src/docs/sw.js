@@ -32,20 +32,37 @@ self.addEventListener("install", (event) => {
       const cache = await caches.open(CACHE_NAME);
       const cachePromises = fullUrlsToCache.map(async (url) => {
         try {
-          return await cache.add(url);
+          const promise = await cache.add(url);
+          console.log(`Install: Caching success: ${url}`);
+          return promise;
         } catch (err) {
-          console.error(`Caching error ${url}: ${err}`);
+          console.warn(`Install: Caching error ${url}: ${err}`);
         }
       });
       await Promise.all(cachePromises);
+      // Activates the service worker instantly
       self.skipWaiting();
+      // Sending a successful installation message
+      await self.clients
+        .matchAll({ includeUncontrolled: true })
+        .then((clients) => {
+          clients.forEach((client) => {
+            client.postMessage({ type: "SW_INSTALLED" });
+          });
+        });
     })
   );
 });
 
+const ignoreCacheUrls = ["https://mc.yandex.ru", "https://mc.yandex.com"];
+
 self.addEventListener("fetch", (event) => {
-  console.log("Fetch processing for", event.request.url);
   const url = new URL(event.request.url);
+  if (ignoreCacheUrls.some((ignoreUrl) => url.origin === ignoreUrl)) {
+    return fetch(event.request);
+  }
+
+  console.log("Fetch processing for", event.request.url);
   const networkFirst = ["/manifest.json", "/main.js"]; // "/api/" for example
   if (networkFirst.some((part) => url.pathname.includes(part))) {
     // Network First Strategy
@@ -62,12 +79,28 @@ self.addEventListener("fetch", (event) => {
           });
           return response;
         })
-        .catch(() => caches.match(event.request))
+        .catch(async () => {
+          // Ошибка сети, пытаемся найти ответ в кэше
+          const cachedResponse = await caches.match(event.request);
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+          if (event.request.mode === "navigate") {
+            return caches.match("./offline.html");
+          }
+          if (event.request.destination === "image") {
+            return caches.match("./fallback.png");
+          }
+          return new Response("", {
+            status: 404,
+            statusText: "Resource not available offline",
+          });
+        })
     );
   } else {
     // Cache First Strategy
     if (!url.protocol.startsWith("http")) {
-      console.log("Resource caching canceled:", event.request.url);
+      console.warn("Resource caching canceled:", event.request.url);
       return;
     }
 
@@ -85,26 +118,46 @@ self.addEventListener("fetch", (event) => {
           "Cache First Strategy: Not found in cache, downloaded from the network:",
           event.request.url
         );
-        return fetch(event.request).then((response) => {
-          if (
-            !response ||
-            response.status !== 200 ||
-            response.type !== "basic"
-          ) {
+        return fetch(event.request)
+          .then((response) => {
+            if (response && response.status === 404) {
+              throw response;
+            }
+            if (
+              !response ||
+              response.status !== 200 ||
+              response.type !== "basic"
+            ) {
+              return response;
+            }
+
+            var responseClone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseClone);
+              console.log(
+                "Cache First Strategy: Dynamically added to cache:",
+                event.request.url
+              );
+            });
+
             return response;
-          }
-
-          var responseToCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
+          })
+          .catch((error) => {
             console.log(
-              "Cache First Strategy: Dynamically added to cache:",
-              event.request.url
+              "Cache First Strategy: Fetching failed, returning offline page instead.",
+              error
             );
+            if (event.request.mode === "navigate") {
+              return caches.match("./offline.html");
+            }
+            if (event.request.destination === "image") {
+              return caches.match("./fallback.png");
+            }
+            return new Response("", {
+              status: 404,
+              statusText: "Resource not available offline",
+            });
           });
-
-          return response;
-        });
       })
     );
   }
@@ -126,8 +179,18 @@ self.addEventListener("activate", function (event) {
 
       // Adding missing URLs to the cache
       if (missingUrls.length > 0) {
-        console.log("Missing files that were added to the cache:", missingUrls);
-        await cache.addAll(missingUrls);
+        console.warn(
+          "Missing files that were added to the cache:",
+          missingUrls
+        );
+        for (const url of missingUrls) {
+          try {
+            await cache.add(url);
+            console.log(`Activate: Caching success: ${url}`);
+          } catch (err) {
+            console.warn(`Activate: Caching error ${url}: ${err}`);
+          }
+        }
       }
 
       // Removing old caches
@@ -149,19 +212,23 @@ self.addEventListener("activate", function (event) {
       });
 
       // Asserting control over all clients
-      await clients.claim();
+      await self.clients.claim();
 
       // Send an update message to all clients
-      const clientsList = await clients.matchAll({ includeUncontrolled: true });
-      clientsList.forEach((client) => {
-        client.postMessage({ type: "UPDATE_AVAILABLE" });
-      });
+      await self.clients
+        .matchAll({ includeUncontrolled: true })
+        .then((clients) => {
+          clients.forEach((client) => {
+            client.postMessage({ type: "UPDATE_AVAILABLE" });
+          });
+        });
     })
   );
 });
 
 self.addEventListener("message", (event) => {
-  if (event.data && event.data.action === "CHECK_UPDATES") {
+  if (!event.data) return;
+  if (event.data.action === "CHECK_UPDATES") {
     self.registration.update();
   }
 });
