@@ -1,7 +1,7 @@
 {
     "$schema": "https://json.schemastore.org/web-manifest-combined.json",
     "name": "Game Design Concepts",
-    "short_name": "GDConcepts",
+    "short_name": "GDC",
     "description": "This project aims to reflect Ian Schreiber's contributions to game design theory and practice.",
     "icons": [
         {

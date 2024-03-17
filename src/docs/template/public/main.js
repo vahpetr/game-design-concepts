@@ -106,23 +106,46 @@ export default {
     });
 
     if ("serviceWorker" in navigator) {
-      window.addEventListener("load", function () {
-        navigator.serviceWorker.register("./sw.js").then(
-          function (registration) {
-            console.log(
-              "ServiceWorker registration successful with scope: ",
-              registration.scope
-            );
-          },
-          function (err) {
-            console.log("ServiceWorker registration failed: ", err);
-          }
-        );
+      navigator.serviceWorker.register("./sw.js").then(
+        (registration) => {
+          console.log(
+            "ServiceWorker registration successful with scope: ",
+            registration.scope
+          );
+          registration.addEventListener("updatefound", () => {
+            const installingWorker = registration.installing;
+            installingWorker.onstatechange = () => {
+              if (
+                installingWorker.state === "installed" &&
+                navigator.serviceWorker.controller
+              ) {
+                // TODO add popup
+                console.warn(
+                  "New version of the application is available! Please reload the page."
+                );
+              }
+            };
+          });
+        },
+        (err) => console.error("ServiceWorker registration failed: ", err)
+      );
+      navigator.serviceWorker.addEventListener("message", (event) => {
+        if (event.data && event.data.type === "UPDATE_AVAILABLE") {
+          // TODO add popup
+          console.warn("Update available. Reload the page.");
+        }
       });
+      if (navigator.serviceWorker.controller) {
+        // TODO add ui button
+        window.checkUpdates = () =>
+          navigator.serviceWorker.controller.postMessage({
+            action: "CHECK_UPDATES",
+          });
+      }
     }
 
     if (!window.speechSynthesis) {
-      console.log("SpeechSynthesis is not supported in this browser.");
+      console.warn("SpeechSynthesis is not supported in this browser.");
       return;
     }
 
