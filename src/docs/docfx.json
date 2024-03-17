@@ -40,7 +40,7 @@
       "_appName": "Игровой дизайн",
       "_appTitle": "Игровой дизайн",
       "_enableSearch": true,
-      "pdf": true
+      "pdf": false
     },
     "sitemap": {
       "baseUrl": "https://vahpetr.github.io/game-design-concepts",
