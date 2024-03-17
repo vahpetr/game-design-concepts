@@ -1,4 +1,4 @@
-var CACHE_NAME = "game-design-concepts-pwa-cache-v1";
+var CACHE_NAME = "game-design-concepts-pwa-cache-v2";
 
 async function prepareFullUrlsToCache() {
   var urlsToCache = [

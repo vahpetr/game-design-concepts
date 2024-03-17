@@ -3,7 +3,12 @@
   .navbar-expand-md .navbar-nav {
     display: none !important;
   }
+  .toc .mb-md-4 {
+    margin-bottom: 1.4rem;
+    padding-left: 48px;
+  }
 }
+
 .speak-btn {
   opacity: 0.5;
   position: fixed;
@@ -49,9 +54,15 @@ body[data-layout="landing"] > footer {
   height: 70px;
 }
 
-@media (min-width: 768px) {
-  .toc .mb-md-4 {
-    margin-bottom: 1.4rem;
-    padding-left: 48px;
-  }
+.nav-link {
+  text-wrap: pretty;
+}
+
+body > main > .content,
+body[data-layout="landing"] > main > .content {
+  overflow-wrap: break-word;
+}
+
+.contribution {
+  margin-left: 48px;
 }
