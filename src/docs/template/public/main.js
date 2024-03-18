@@ -6,7 +6,14 @@ export default {
       ym && ym(YMID, "reachGoal", goal);
     }
     function appendMeta() {
-      const meta = [
+      const headers = [
+        {
+          tag: "script",
+          attrs: {
+            src: "https://js.sentry-cdn.com/9888915bccbbce878c04d70825b1f6a6.min.js",
+            crossorigin: "anonymous",
+          },
+        },
         {
           tag: "link",
           attrs: {
@@ -69,7 +76,7 @@ export default {
         },
       ];
 
-      meta.forEach((p) => {
+      headers.forEach((p) => {
         const el = document.createElement(p.tag);
         Object.keys(p.attrs).forEach((key) => {
           el.setAttribute(key, p.attrs[key]);

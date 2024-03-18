@@ -54,7 +54,11 @@ self.addEventListener("install", (event) => {
   );
 });
 
-const ignoreCacheUrls = ["https://mc.yandex.ru", "https://mc.yandex.com"];
+const ignoreCacheUrls = [
+  "https://mc.yandex.ru",
+  "https://mc.yandex.com",
+  "https://js.sentry-cdn.com",
+];
 
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
